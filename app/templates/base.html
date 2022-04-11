@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+    <head>
+        {% if title %}
+        <title>{{ title }} - Bitcoin Blog</title>
+        {% else %}
+        <title>Welcome Friend!</title>
+        {% endif %}
+    </head>
+    <body>
+    <div>A Bitcoin & More website: <a href="/index">Home</a></div>
+    <br>
+    {% block content %}{% endblock %}
+    </body>
+</html>
