@@ -2,10 +2,14 @@
     <tr valign="top">
         <td><img src="{{ post.author.avatar(36) }}"</td>
         <td>
+            {% if post.author.username == current_user.username %}
+            <b>You wrote:</b><br>{{ post.body }}
+            {% else %}
             <a href="{{ url_for('user', username=post.author.username) }}">
-                {{ post.author.username }}
+                <b>{{ post.author.username }}</b>
             </a>
-            says:<br>{{ post.body }}
+            <b>says:</b><br>{{ post.body }}
+            {% endif %}
         </td>
     </tr>
 </table>
