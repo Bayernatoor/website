@@ -10,12 +10,12 @@ from flask_mail import Mail
 
 
 app = Flask(__name__)
+mail = Mail(app)
 app.config.from_object(Config)
 login = LoginManager(app)
 login.login_view = 'login'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-mail = Mail(app)
 
 from app import routes, models, errors
 
