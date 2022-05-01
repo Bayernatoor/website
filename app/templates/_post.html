@@ -8,14 +8,24 @@
             {% if post.author.username == current_user.username %}
             <b>You wrote {{ moment(post.timestamp).fromNow() }} :</b>
             <br>
-            {{ post.body }}
+            <span id="post{{ post.id }}">{{ post.body }}</span>
             {% else %}
             <a href="{{ url_for('user', username=post.author.username) }}">
                 <b>{{ post.author.username }}</b>
             </a>
             <b>said {{ moment(post.timestamp).fromNow() }}:</b>
             <br>
-            {{ post.body }}
+            <span id="post{{ post.id }}">{{ post.body }}</span>
+            {% endif %}
+            {% if post.language and post.language != g.locale %}
+            <br><br>
+            <span id="translation{{ post.id }}">
+            <a href="javascript:translate(
+                        '#post{{ post.id }}',
+                        '#translation{{ post.id }}',
+                        '{{ post.language}}',
+                        '{{ g.locale }}');">{{ _('Translate') }}</a>
+            </span>
             {% endif %}
         </td>
     </tr>
