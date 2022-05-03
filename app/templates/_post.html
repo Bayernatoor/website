@@ -5,6 +5,7 @@
                 <img src="{{ post.author.avatar(70) }}" />
             </a>
         <td>
+
             {% if post.author.username == current_user.username %}
             <b>You wrote {{ moment(post.timestamp).fromNow() }} :</b>
             <br>
