@@ -27,54 +27,56 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    db.init_app(app)
-    migrate.init_app(app, db)
-    login.init_app(app)
-    mail.init_app(app)
-    bootstrap.init_app(app)
-    moment.init_app(app)
-    babel.init_app(app)
+    with app.app_context():
 
-    from app.errors import bp as errors_bp
-    app.register_blueprint(errors_bp)
+        db.init_app(app)
+        migrate.init_app(app, db)
+        login.init_app(app)
+        mail.init_app(app)
+        bootstrap.init_app(app)
+        moment.init_app(app)
+        babel.init_app(app)
 
-    from app.auth import bp as auth_bp
-    app.register_blueprint(auth_bp, url_prefix='/auth')
+        from app.errors import bp as errors_bp
+        app.register_blueprint(errors_bp)
 
-    from app.main import bp as main_bp
-    app.register_blueprint(main_bp)
+        from app.auth import bp as auth_bp
+        app.register_blueprint(auth_bp, url_prefix='/auth')
 
-    if not app.debug and not app.testing:
-        if current_app.config['MAIL_SERVER']:
-            auth = None
-            if current_app.config['MAIL_USERNAME'] or current_app.config['MAIL_PASSWORD']:
-                auth = (current_app.config['MAIL_USERNAME'], current_app.config['MAIL_PASSWORD'])
-            secure = None
-            if current_app.config['MAIL_USE_TLS']:
-                secure = ()
-            mail_handler = SMTPHandler(
-                mailhost=(current_app.config['MAIL_SERVER'], current_app.config['MAIL_PORT']),
-                fromaddr='no-reply@' + current_app.config['MAIL_SERVER'],
-                toaddrs=current_app.config['ADMINS'], subject='Website Failure',
-                credentials=auth, secure=secure)
-            mail_handler.setLevel(logging.ERROR)
-            app.logger.addHandler(mail_handler)
+        from app.main import bp as main_bp
+        app.register_blueprint(main_bp)
 
-        if not os.path.exists('logs'):
-            os.mkdir('logs')
-        file_handler = RotatingFileHandler('logs/website.log', maxBytes=10248,
-                                           backupCount=10)
-        file_handler.setFormatter(logging.Formatter(
-            '%(asctime)s %(levelname)s: %(messsage)s [in %(pathname)s:%(lineno)d]'))
-        file_handler.setLevel(logging.INFO)
-        app.logger.setLevel(logging.INFO)
-        app.logger.info('Website startup')\
+        if not app.debug and not app.testing:
+            if current_app.config['MAIL_SERVER']:
+                auth = None
+                if current_app.config['MAIL_USERNAME'] or current_app.config['MAIL_PASSWORD']:
+                    auth = (current_app.config['MAIL_USERNAME'], current_app.config['MAIL_PASSWORD'])
+                secure = None
+                if current_app.config['MAIL_USE_TLS']:
+                    secure = ()
+                mail_handler = SMTPHandler(
+                    mailhost=(current_app.config['MAIL_SERVER'], current_app.config['MAIL_PORT']),
+                    fromaddr='no-reply@' + current_app.config['MAIL_SERVER'],
+                    toaddrs=current_app.config['ADMINS'], subject='Website Failure',
+                    credentials=auth, secure=secure)
+                mail_handler.setLevel(logging.ERROR)
+                app.logger.addHandler(mail_handler)
+
+            if not os.path.exists('logs'):
+                os.mkdir('logs')
+            file_handler = RotatingFileHandler('logs/website.log', maxBytes=10248,
+                                               backupCount=10)
+            file_handler.setFormatter(logging.Formatter(
+                '%(asctime)s %(levelname)s: %(messsage)s [in %(pathname)s:%(lineno)d]'))
+            file_handler.setLevel(logging.INFO)
+            app.logger.setLevel(logging.INFO)
+            app.logger.info('Website startup')\
 
     return app
 
 @babel.localeselector
 def get_locale():
-    return request.accept_languages.best_match(current_current_app.config['LANGUAGES'])
+    return request.accept_languages.best_match(current_app.config['LANGUAGES'])
 
 
 from app import models
