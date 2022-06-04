@@ -1,7 +1,7 @@
 {% extends 'bootstrap/base.html' %}
 
 {% block title %}
-    {% if title %}{{ title }}  - website{% else %}{{ _('Welcome to Website') }}{% endif %}
+    {% if title %}{{ title }} - Website{% else %}{{ _('Welcome to Website') }}{% endif %}
 {% endblock %}
 
 {% block navbar %}
@@ -22,11 +22,9 @@
                     <li><a href="{{ url_for('main.explore') }}">{{ _('Explore') }}</a></li>
                 </ul>
                 {% if g.search_form %}
-                <form class="navbar-form navbar-left" method="get"
-                        action="{{ url_for('main.serch') }}">
+                <form class="navbar-form navbar-left" method="get" action="{{ url_for('main.search') }}">
                     <div class="form-group">
-                        {{ g.search_form.q(size=20, class="form-control',
-                            placeholder=g.search_form.q.label.text) }}
+                        {{ g.search_form.q(size=20, class='form-control', placeholder=g.search_form.q.label.text) }}
                     </div>
                 </form>
                 {% endif %}
