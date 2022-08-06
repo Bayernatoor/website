@@ -23,7 +23,6 @@ class SearchableMixin(object):
             db.case(when, value=cls.id)), total
 
     @classmethod
-    @classmethod
     def before_commit(cls, session):
         session._changes = {
             'add': list(session.new),
